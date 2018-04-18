@@ -34,5 +34,13 @@ class BoardAPI(Resource):
         return board
 
 
-app = Flask(__name__)
-api.init_app(app)
+@api.route("/games/<int:game_id>/cells/<int:x>/<int:y>")
+class GameCellAPI(Resource):
+
+    def put(self, game_id, x, y):
+        return board
+
+def create_app():
+    app = Flask(__name__)
+    api.init_app(app)
+    return app
