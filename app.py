@@ -27,5 +27,12 @@ class BoardsAPI(Resource):
         return board, 201
 
 
+@api.route("/boards/<int:id>")
+class BoardAPI(Resource):
+
+    def get(self, id):
+        return board
+
+
 app = Flask(__name__)
 api.init_app(app)
