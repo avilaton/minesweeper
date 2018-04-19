@@ -44,8 +44,30 @@ class Board:
             self.over = True
 
         self.cells.append({"x": x, "y": y, "value": 0})
-
         return
+
+    def get_cell_neighbours(self, x, y):
+        """
+        Find coordinates for all valid cell neighbours.
+        :param x:
+        :param y:
+        :return:
+        """
+        deltas = [(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, -1), (0, -1), (1, -1)]
+        candidates = [(x + i, y + j) for i, j in deltas]
+        neighbours = [
+            cell for cell in candidates if self.validate_cell(cell[0], cell[1])
+        ]
+        return neighbours
+
+    def validate_cell(self, x, y):
+        """
+        Ensure a cell has valid coordinates in this board.
+        :param x:
+        :param y:
+        :return:
+        """
+        return 0 <= x < self.dimensions[0] and 0 <= y < self.dimensions[1]
 
 
 boards = []
