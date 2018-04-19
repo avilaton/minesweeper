@@ -10,6 +10,7 @@ class AlreadyVisitedError(Exception):
 class Board:
     id = None
     dimensions = [6, 6]
+    mine_count = 3
     mines = []
     cells = []
     over = False
@@ -25,7 +26,7 @@ class Board:
                     for x in range(self.dimensions[0])
                     for y in range(self.dimensions[1])
                 ],
-                10,
+                self.mine_count,
             )
 
     def visit_cell(self, x, y):
