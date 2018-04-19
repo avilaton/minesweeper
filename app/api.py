@@ -10,6 +10,12 @@ def handle_lookup_error(error):
     return {"message": "Not found"}, 404
 
 
+@api.errorhandler(game.AlreadyVisitedError)
+def handle_already_visited_error(error):
+    """Return a custom message and 400 status code"""
+    return {"message": "Already visited"}, 409
+
+
 cell_model = api.model(
     "Cell",
     {
