@@ -54,11 +54,11 @@ class BoardAPI(Resource):
         return board
 
 
-@api.route("/boards/<int:board_id>/cells/<int:x>/<int:y>")
+@api.route("/boards/<board_id>/cells/<int:x>/<int:y>")
 class BoardCellAPI(Resource):
 
     @api.marshal_with(board_model)
     def put(self, board_id, x, y):
         board = game.get_board(board_id)
-        game.visit_cell(board, x, y)
+        board.visit_cell(x, y)
         return board
