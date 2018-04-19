@@ -1,5 +1,5 @@
 from flask import current_app
-from flask_restplus import Api, Resource, fields, Model
+from flask_restplus import Api, Resource, fields
 from app import game
 
 api = Api()
