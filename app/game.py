@@ -24,12 +24,12 @@ class Board(db.Model):
     def __init__(self, *args, **kwargs):
         super(Board, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
-        self.mine_count = kwargs.get('mine_count', 3)
-        self.dimensions = kwargs.get('dimensions', [6, 6])
+        self.mine_count = kwargs.get("mine_count", 3)
+        self.dimensions = kwargs.get("dimensions", [6, 6])
         self.cells = []
 
-        if 'mines' in kwargs:
-            self.mines = kwargs.get('mines')
+        if "mines" in kwargs:
+            self.mines = kwargs.get("mines")
         else:
             self.mines = random.sample(
                 [
@@ -100,22 +100,22 @@ class Board(db.Model):
         """
         return 0 <= x < self.dimensions[0] and 0 <= y < self.dimensions[1]
 
+    @staticmethod
+    def get_all():
+        return db.session.query(Board).all()
 
+    @staticmethod
+    def get_by_id(board_id):
+        try:
+            board = db.session.query(Board).filter_by(id=board_id).one()
+        except sa.exc.SQLAlchemyError:
+            raise LookupError()
 
-def get_boards():
-    return db.session.query(Board).all()
+        return board
 
-
-def get_board(board_id):
-    try:
-        board = db.session.query(Board).filter_by(id=board_id).one()
-    except sa.exc.SQLAlchemyError:
-        raise LookupError()
-    return board
-
-
-def create_board():
-    board = Board()
-    db.session.add(board)
-    db.session.commit()
-    return board
+    @staticmethod
+    def create():
+        board = Board()
+        db.session.add(board)
+        db.session.commit()
+        return board

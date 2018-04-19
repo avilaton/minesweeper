@@ -1,23 +1,25 @@
 from flask import current_app
-from flask_restplus import Api, Resource, fields
-from app import game
-
-api = Api()
+from flask_restplus import Api, Resource, fields, Namespace
+from app.game import Board, AlreadyVisitedError
 
 
-@api.errorhandler(LookupError)
+ns = Namespace("boards")
+
+
+@ns.errorhandler(LookupError)
 def handle_lookup_error(error):
     """Return a custom message and 400 status code"""
     return {"message": "Not found"}, 404
 
 
-@api.errorhandler(game.AlreadyVisitedError)
+@ns.errorhandler(AlreadyVisitedError)
 def handle_already_visited_error(error):
     """Return a custom message and 400 status code"""
     return {"message": "Already visited"}, 409
 
 
-cell_model = api.model(
+
+cell_model = ns.model(
     "Cell",
     {
         "x": fields.Integer(),
@@ -28,7 +30,7 @@ cell_model = api.model(
     },
 )
 
-board_model = api.model(
+board_model = ns.model(
     "Board",
     {
         "id": fields.String(),
@@ -39,36 +41,36 @@ board_model = api.model(
 )
 
 
-@api.route("/boards")
+@ns.route("")
 class BoardsAPI(Resource):
 
-    @api.marshal_with(board_model, as_list=True)
+    @ns.marshal_with(board_model, as_list=True)
     def get(self):
-        return game.get_boards()
+        return Board.get_all()
 
-    @api.marshal_with(board_model, as_list=True)
+    @ns.marshal_with(board_model, as_list=True)
     def post(self):
-        board = game.create_board()
+        board = Board.create()
         current_app.logger.info(board.id)
         current_app.logger.info(board.mines)
         return board, 201
 
 
-@api.route("/boards/<board_id>")
+@ns.route("/<board_id>")
 class BoardAPI(Resource):
 
-    @api.marshal_with(board_model)
+    @ns.marshal_with(board_model)
     def get(self, board_id):
-        board = game.get_board(board_id)
+        board = Board.get_by_id(board_id)
         return board
 
 
-@api.route("/boards/<board_id>/cells/<int:x>/<int:y>")
+@ns.route("/<board_id>/cells/<int:x>/<int:y>")
 class BoardCellAPI(Resource):
 
-    @api.marshal_with(board_model)
+    @ns.marshal_with(board_model)
     def put(self, board_id, x, y):
-        board = game.get_board(board_id)
+        board = Board.get_by_id(board_id)
         board.visit_cell(x, y)
         board.save()
         return board

@@ -1,7 +1,9 @@
 import os
 import click
 from flask import Flask
-from app.api import api
+from flask_restplus import Api
+
+from app.api import ns
 from app.database import db
 
 
@@ -12,19 +14,21 @@ def create_app():
     )
 
     db.init_app(app)
+
+    api = Api(doc="/docs")
+    api.add_namespace(ns, path="/api/boards")
     api.init_app(app)
 
     @app.cli.command()
     def initdb():
         """Initialize the database."""
-        click.echo('Init the db')
+        click.echo("Init the db")
         db.create_all()
-
 
     @app.cli.command()
     def dropdb():
         """Drop the database."""
-        click.echo('Drop the db')
+        click.echo("Drop the db")
         db.drop_all()
 
     return app
