@@ -1,3 +1,4 @@
+from flask import current_app
 from flask_restplus import Api, Resource, fields, Model
 from app import game
 
@@ -48,6 +49,8 @@ class BoardsAPI(Resource):
     @api.marshal_with(board_model, as_list=True)
     def post(self):
         board = game.create_board()
+        current_app.logger.info(board.id)
+        current_app.logger.info(board.mines)
         return board, 201
 
 
