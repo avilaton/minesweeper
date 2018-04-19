@@ -3,6 +3,13 @@ from app import game
 
 api = Api()
 
+
+@api.errorhandler(LookupError)
+def handle_lookup_error(error):
+    """Return a custom message and 400 status code"""
+    return {"message": "Not found"}, 404
+
+
 cell_model = api.model(
     "Cell",
     {
