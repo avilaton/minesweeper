@@ -1,6 +1,11 @@
 import uuid
 
 
+class AlreadyVisitedError(Exception):
+    "Cell was already revealed."
+    pass
+
+
 class Board:
     id = None
     dimensions = [6, 6]
@@ -15,13 +20,13 @@ class Board:
     def visit_cell(self, x, y):
         """Visit a cell in a board:
         - check if cell is visited already
-        - if not, evaluate if it is a bomb
+        - if not, evaluate if it is a mine
         - if it is a positive cell, add to visited
         - if it is a zero, find neighbours and repeat
         """
         existing = [cell for cell in self.cells if cell["x"] == x and cell["y"] == y]
         if existing:
-            raise LookupError()
+            raise AlreadyVisitedError()
 
         self.cells.append({"x": x, "y": y, "value": 0})
 
@@ -47,10 +52,4 @@ def get_board(board_id):
     except StopIteration:
         raise LookupError()
 
-    return board
-
-
-def visit_cell(board_id, x, y):
-    board = get_board(board_id)
-    board.visit_cell(x, y)
     return board
