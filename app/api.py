@@ -17,7 +17,7 @@ cell_model = api.model(
 board_model = api.model(
     "Board",
     {
-        "id": fields.Integer(),
+        "id": fields.String(),
         "dimensions": fields.List(fields.Integer()),
         "cells": fields.List(fields.Nested(cell_model)),
         "over": fields.Boolean(),

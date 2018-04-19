@@ -1,3 +1,5 @@
+import uuid
+
 board = {
     "id": 2,
     "dimensions": [6, 6],
@@ -8,14 +10,14 @@ board = {
 
 boards = [
     {"id": 1, "over": True},
-    {"id": 2, "over": False},
-    {"id": 3, "over": False},
-    {"id": 4, "over": False},
 ]
 
 
 def create_board():
-    return board
+    new_id = str(uuid.uuid4())
+    new_board = {'id': new_id, "over": False}
+    boards.append(new_board)
+    return new_board
 
 
 def get_boards():
