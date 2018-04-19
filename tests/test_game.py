@@ -4,7 +4,8 @@ from app import game
 
 
 def test_game_visit_cell():
-    board = game.Board()
+    board = game.Board(mines=[(1, 1), (4, 5), (1, 3)])
+    assert board.mines == [(1, 1), (4, 5), (1, 3)]
 
     assert board.cells == []
 
@@ -13,3 +14,7 @@ def test_game_visit_cell():
 
     with pytest.raises(game.AlreadyVisitedError):
         board.visit_cell(1, 5)
+
+    assert not board.over
+    board.visit_cell(1, 1)
+    assert board.over
