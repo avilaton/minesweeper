@@ -33,3 +33,16 @@ def test_game_visit_cell():
 
     rv = board.get_cell_neighbours(0, 1)
     assert set(rv) == {(0, 0), (1, 0), (1, 1), (1, 2), (0, 2)}
+
+    assert board.count_neighbour_mines(0, 0) == 1
+    assert board.count_neighbour_mines(0, 1) == 1
+    assert board.count_neighbour_mines(1, 0) == 1
+    assert board.count_neighbour_mines(2, 0) == 1
+    assert board.count_neighbour_mines(2, 1) == 1
+    assert board.count_neighbour_mines(2, 2) == 2
+    assert board.count_neighbour_mines(2, 2) == 2
+    assert board.count_neighbour_mines(1, 2) == 2
+    assert board.count_neighbour_mines(0, 2) == 2
+    assert board.count_neighbour_mines(0, 3) == 1
+    assert board.count_neighbour_mines(0, 5) == 0
+    assert board.count_neighbour_mines(5, 0) == 0

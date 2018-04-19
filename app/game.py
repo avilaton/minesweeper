@@ -43,9 +43,11 @@ class Board:
         mines = [mine for mine in self.mines if mine[0] == x and mine[1] == y]
         if mines:
             self.over = True
+            self.cells.append({"x": x, "y": y, "value": None})
+            return
 
-        self.cells.append({"x": x, "y": y, "value": 0})
-        return
+        value = self.count_neighbour_mines(x, y)
+        self.cells.append({"x": x, "y": y, "value": value})
 
     def get_cell_neighbours(self, x, y):
         """
@@ -60,6 +62,17 @@ class Board:
             cell for cell in candidates if self.validate_cell(cell[0], cell[1])
         ]
         return neighbours
+
+    def count_neighbour_mines(self, x, y):
+        """
+        Count the number of mines which are direct neighbours of this cell.
+        :param x:
+        :param y:
+        :return:
+        """
+        neighbours = self.get_cell_neighbours(x, y)
+        neighbour_mines = [m for m in self.mines if m in neighbours]
+        return len(neighbour_mines)
 
     def validate_cell(self, x, y):
         """
