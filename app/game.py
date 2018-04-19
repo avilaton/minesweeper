@@ -61,6 +61,7 @@ class Board(db.Model):
 
         value = self.count_neighbour_mines(x, y)
         cells.append({"x": x, "y": y, "value": value})
+        print(cells)
         self.cells = cells
 
     def save(self):
@@ -74,7 +75,7 @@ class Board(db.Model):
         :return:
         """
         deltas = [(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, -1), (0, -1), (1, -1)]
-        candidates = [(x + i, y + j) for i, j in deltas]
+        candidates = [[x + i, y + j] for i, j in deltas]
         neighbours = [
             cell for cell in candidates if self.validate_cell(cell[0], cell[1])
         ]
