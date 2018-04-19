@@ -1,7 +1,8 @@
 import os
 import click
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_restplus import Api
+from flask_cors import CORS
 
 from app.api import ns
 from app.database import db
@@ -14,6 +15,7 @@ def create_app():
     )
 
     db.init_app(app)
+    CORS(app)
 
     api = Api(doc="/docs")
     api.add_namespace(ns, path="/api/boards")
