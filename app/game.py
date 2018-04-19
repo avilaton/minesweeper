@@ -1,24 +1,35 @@
 import uuid
 import random
 
+import sqlalchemy as sa
+import sqlalchemy.exc
+from app.database import db
+
 
 class AlreadyVisitedError(Exception):
     "Cell was already revealed."
     pass
 
 
-class Board:
-    id = None
-    dimensions = [6, 6]
-    mine_count = 3
-    mines = []
-    cells = []
-    over = False
+class Board(db.Model):
 
-    def __init__(self, mines=None):
+    id = sa.Column(sa.String, primary_key=True)
+
+    dimensions = sa.Column(sa.JSON)
+    mine_count = sa.Column(sa.Integer, default=3)
+    mines = sa.Column(sa.JSON)
+    cells = sa.Column(sa.JSON)
+    over = sa.Column(sa.Boolean, default=False)
+
+    def __init__(self, *args, **kwargs):
+        super(Board, self).__init__(*args, **kwargs)
         self.id = str(uuid.uuid4())
-        if mines:
-            self.mines = mines
+        self.mine_count = kwargs.get('mine_count', 3)
+        self.dimensions = kwargs.get('dimensions', [6, 6])
+        self.cells = []
+
+        if 'mines' in kwargs:
+            self.mines = kwargs.get('mines')
         else:
             self.mines = random.sample(
                 [
@@ -36,18 +47,24 @@ class Board:
         - if it is a positive cell, add to visited
         - if it is a zero, find neighbours and repeat
         """
-        existing = [cell for cell in self.cells if cell["x"] == x and cell["y"] == y]
+        cells = [c for c in self.cells] or []
+        existing = [c for c in cells if c["x"] == x and c["y"] == y]
         if existing:
             raise AlreadyVisitedError()
 
-        mines = [mine for mine in self.mines if mine[0] == x and mine[1] == y]
+        mines = [m for m in self.mines if m[0] == x and m[1] == y]
         if mines:
             self.over = True
-            self.cells.append({"x": x, "y": y, "value": None})
+            cells.append({"x": x, "y": y, "value": None})
+            self.cells = cells
             return
 
         value = self.count_neighbour_mines(x, y)
-        self.cells.append({"x": x, "y": y, "value": value})
+        cells.append({"x": x, "y": y, "value": value})
+        self.cells = cells
+
+    def save(self):
+        db.session.commit()
 
     def get_cell_neighbours(self, x, y):
         """
@@ -84,23 +101,21 @@ class Board:
         return 0 <= x < self.dimensions[0] and 0 <= y < self.dimensions[1]
 
 
-boards = []
-
-
-def create_board():
-    board = Board()
-    boards.append(board)
-    return board
-
 
 def get_boards():
-    return boards
+    return db.session.query(Board).all()
 
 
 def get_board(board_id):
     try:
-        board = next(item for item in boards if item.id == board_id)
-    except StopIteration:
+        board = db.session.query(Board).filter_by(id=board_id).one()
+    except sa.exc.SQLAlchemyError:
         raise LookupError()
+    return board
 
+
+def create_board():
+    board = Board()
+    db.session.add(board)
+    db.session.commit()
     return board

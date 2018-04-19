@@ -70,4 +70,5 @@ class BoardCellAPI(Resource):
     def put(self, board_id, x, y):
         board = game.get_board(board_id)
         board.visit_cell(x, y)
+        board.save()
         return board
