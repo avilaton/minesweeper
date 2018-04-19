@@ -38,7 +38,7 @@ class BoardsAPI(Resource):
         return board, 201
 
 
-@api.route("/boards/<int:board_id>")
+@api.route("/boards/<board_id>")
 class BoardAPI(Resource):
 
     @api.marshal_with(board_model)
