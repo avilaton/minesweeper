@@ -30,18 +30,3 @@ You do not need to fully complete the challenge. We suggest not to spend more th
 What we want to see is how well you handle yourself given the time you spend on the problem, how you think, and how you prioritize when time is insufficient to solve everything.
 
 Please email your solution as soon as you have completed the challenge or the time is up.
-
-
-# Notes
-
-Demo: https://minesweeper-avila.herokuapp.com/
-
-## Tools
-I will use flask and flask-restplus because it already bundles a documentation endpoint using swagger.
-
-## Development
-To run the project in development mode
-```
-cp .env.dev .env
-pipenv run flask run
-```
