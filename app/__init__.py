@@ -17,6 +17,15 @@ def create_app():
     db.init_app(app)
     CORS(app)
 
+    @app.route("/")
+    def index():
+        # return 'helo'
+        return send_from_directory('static', 'index.html')
+
+    @app.route("/<path:path>")
+    def static_over(path):
+        return send_from_directory('static', path)
+
     api = Api(doc="/docs")
     api.add_namespace(ns, path="/api/boards")
     api.init_app(app)
