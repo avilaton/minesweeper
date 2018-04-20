@@ -6,7 +6,7 @@
     <button v-on:click="createBoard">New Game</button>
       <div v-for="(row, y) in rows">
         <button v-for="(col, x) in row" v-on:click="onClickCell(x, y)">
-          {{ col.label }} 
+          {{ col.label }}
         </button>
       </div>
       <h3 v-if="board.over">Game Over</h3>
@@ -22,7 +22,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      apiBase: 'http://localhost:5000/api/boards',
+      apiBase: '/api/boards',
       board: {
         over: false
       },
